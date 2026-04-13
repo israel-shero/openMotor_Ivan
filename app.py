@@ -19,7 +19,7 @@ class App(QApplication):
     def __init__(self, args):
         super().__init__(args)
 
-        self.icon = QIcon(os.path.join(os.path.dirname(sys.argv[0]), 'resources/oMIconCyclesSmall.png'))
+        self.icon = QIcon(self.getResourcePath('oMIconCyclesSmall.png'))
 
         self.headless = '-h' in args
 
@@ -96,8 +96,36 @@ class App(QApplication):
     def isDarkMode(self):
         if self.headless:
             return False
+        if not hasattr(self, 'styleHints'):
+            return False
+        style_hints = self.styleHints()
+        if style_hints is None or not hasattr(style_hints, 'colorScheme'):
+            return False
+        return style_hints.colorScheme() == Qt.ColorScheme.Dark
 
-        return self.styleHints().colorScheme() == Qt.ColorScheme.Dark
+    def getResourcePath(self, filename):
+        bundle_root = getattr(sys, '_MEIPASS', None)
+        candidates = []
+        if bundle_root is not None:
+            candidates.extend([
+                os.path.join(bundle_root, 'resources', filename),
+                os.path.join(bundle_root, filename),
+            ])
+
+        exe_dir = os.path.abspath(os.path.dirname(sys.argv[0]))
+        candidates.extend([
+            os.path.join(exe_dir, 'resources', filename),
+            os.path.join(exe_dir, '..', 'Resources', 'resources', filename),
+            os.path.join(exe_dir, '..', 'Resources', filename),
+            os.path.join(os.path.abspath(os.path.dirname(__file__)), 'resources', filename),
+        ])
+
+        for path in candidates:
+            norm = os.path.abspath(path)
+            if os.path.exists(norm):
+                return norm
+
+        return os.path.join('resources', filename)
 
     def outputMessage(self, content, title='openMotor'):
         if self.headless:

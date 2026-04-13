@@ -2,12 +2,20 @@
 
 # Run with `pyinstaller --windowed --onedir`
 
-from uilib.fileIO import appVersionStr
+import os
+
+SPEC_DIR = os.path.abspath(globals().get('specpath', os.path.join(os.getcwd(), 'pyinstaller')))
+cwd_main = os.path.join(os.getcwd(), 'main.py')
+if os.path.isfile(cwd_main):
+    PROJECT_DIR = os.path.abspath(os.getcwd())
+else:
+    PROJECT_DIR = os.path.abspath(os.path.join(SPEC_DIR, '..'))
+appVersionStr = '0.6.1'
 
 block_cipher = None
 
-a = Analysis(['../main.py'],
-             pathex=['../'],
+a = Analysis([os.path.join(PROJECT_DIR, 'main.py')],
+             pathex=[PROJECT_DIR],
              binaries=[],
              datas=[],
              hiddenimports=['pywt._extensions._cwt'],
@@ -41,7 +49,7 @@ coll = COLLECT(exe,
               name='openMotor')
 app = BUNDLE(coll,
              name='openMotor.app',
-             icon='../resources/oMIconCycles.icns',
+             icon=os.path.join(PROJECT_DIR, 'resources', 'oMIconCycles.icns'),
              version=appVersionStr,
              info_plist={
               'NSHighResolutionCapable': True,
