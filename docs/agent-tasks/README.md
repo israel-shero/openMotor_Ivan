@@ -74,3 +74,10 @@ This directory is a versioned task queue for Codex and other agents. GitHub Issu
 | DOC-01 | [onboarding](DOC-01-onboarding.md) |
 
 These extend existing M0/INF/UI work; audit for overlap before implementing. Reference drawing workflow is evidence/metadata-oriented, not an assertion of a fully specified motor.
+
+## Implementation readiness and evidence gates
+- [Implementation readiness and execution handoff](IMPLEMENTATION_READINESS.md)
+- [Validation evidence matrix](VALIDATION_MATRIX.md)
+- [Machine-readable initial requirements coverage](REQUIREMENTS_COVERAGE.json)
+
+**Important:** These are planning artifacts, not proof of code coverage or passing tests. No multi-agent task execution until verified atomic claims are available; task announcement alone does not reserve work.
