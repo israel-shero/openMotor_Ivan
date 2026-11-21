@@ -8,3 +8,5 @@ from .igniter import *
 from .importedData import *
 from .importedDataGui import *
 from .fileIO import TestFileEnvelope
+from .migrationBaseline import TestMigrationBaseline
+from .solverConfigBaseline import TestSolverConfigBaseline
