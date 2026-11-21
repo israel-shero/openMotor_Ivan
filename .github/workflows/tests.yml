@@ -4,8 +4,10 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Ubuntu 24.04 provides builds for both Python versions in this matrix.
+    runs-on: ubuntu-24.04
     strategy:
+      fail-fast: false
       matrix:
         python-version: ['3.9', '3.10']
 
@@ -29,6 +31,24 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Run unit tests
+    - name: Install Qt system dependency
       run: |
-        PYTHONPATH=. python test/unit.py
+        sudo apt-get update
+        sudo apt-get install -y libegl1
+    - name: Generate Qt views
+      run: |
+        python - <<'PYTHON'
+        from pathlib import Path
+
+        from PyQt6 import uic
+
+        views = Path("uilib/views")
+        for form in sorted((views / "forms").glob("*.ui")):
+            with (views / f"{form.stem}_ui.py").open("w", encoding="utf-8") as output:
+                uic.compileUi(str(form), output)
+        PYTHON
+    - name: Run unit tests
+      env:
+        QT_QPA_PLATFORM: offscreen
+        PYTHONPATH: .
+      run: python test/unit.py
