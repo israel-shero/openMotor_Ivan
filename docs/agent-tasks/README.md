@@ -10,7 +10,7 @@ This directory is a versioned task queue for Codex and other agents. GitHub Issu
 ## How an agent should pick work
 1. Read this file, `CHECKPOINT_2026_11_20.md`, repository agent instructions and the active integration branch.
 2. Choose an unclaimed task with satisfied dependencies; inspect code for existing implementation before proceeding.
-3. Claim the task by announcing its file and proposed branch; coordinate parallel work to avoid conflicting edits.
+3. Acquire and verify a create-only exclusive remote claim per CLAIM_PROTOCOL.md, then announce the claim; announcing alone does not reserve work.
 4. Execute the task's bounded scope and acceptance gates, then open a PR against `integration/srm1d-packaging` after approval.
 5. Update this index/task status in the PR. Never assume this document reflects live GitHub state.
 
