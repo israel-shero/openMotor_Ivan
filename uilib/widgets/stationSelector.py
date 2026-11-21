@@ -297,14 +297,15 @@ class StationSelector(QGroupBox):
         return '{}(c{}/{}) · {}'.format(prefix, st['cell_index'], self._n, dist)
 
     def _rebuild_list(self):
-        from srm_1d.station_viz import cell_categories, classify_cell
         while self.listLayout.count():
             item = self.listLayout.takeAt(0)
             w = item.widget()
             if w is not None:
                 w.deleteLater()
 
-        if self._cell_seg is not None:
+        if self._cell_seg is not None and self._stations:
+            from srm_1d.station_viz import cell_categories, classify_cell
+
             for cat in cell_categories(self._cell_seg):
                 members = [s for s in self._stations
                            if cat['lo'] <= s['cell_index'] <= cat['hi']]

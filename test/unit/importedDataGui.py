@@ -1,7 +1,9 @@
 import os
 os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
+import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 try:
     from PyQt6.QtWidgets import QApplication
@@ -40,6 +42,14 @@ class TestImportedOverlay(unittest.TestCase):
         cls.app = QApplication.instance() or QApplication([])
         if not hasattr(cls.app, 'isDarkMode'):   # openMotor's app subclass provides this
             cls.app.isDarkMode = lambda: False
+
+    def test_clear_empty_station_list_without_optional_plugin(self):
+        from uilib.widgets.stationSelector import StationSelector
+
+        selector = StationSelector()
+        with patch.dict(sys.modules, {"srm_1d.station_viz": None}):
+            selector.clear()
+        self.assertEqual(selector.listLayout.count(), 0)
 
     def test_load_toggle_draw_clear(self):
         _ensureUi()
