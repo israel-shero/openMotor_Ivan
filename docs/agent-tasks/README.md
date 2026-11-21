@@ -1,5 +1,8 @@
 # Agent task queue — openMotor_Ivan
 
+## Mandatory before starting any task
+Read [CLAIM_PROTOCOL.md](CLAIM_PROTOCOL.md). **Claim the task atomically on GitHub before any task-specific work.** If a lock already exists or create-only behavior cannot be guaranteed, do not start; choose another eligible task. Issue labels/comments alone are not sufficient for concurrency safety.
+
 **Only target:** https://github.com/israel-shero/openMotor_Ivan
 
 This directory is a versioned task queue for Codex and other agents. GitHub Issues were disabled when this queue was created (2026-11-21), so these Markdown files are the source of truth until issues can be enabled. Tasks are proposals, not claims of unimplemented functionality. Check current code, branch and PRs before starting.
