@@ -81,3 +81,10 @@ These extend existing M0/INF/UI work; audit for overlap before implementing. Ref
 - [Machine-readable initial requirements coverage](REQUIREMENTS_COVERAGE.json)
 
 **Important:** These are planning artifacts, not proof of code coverage or passing tests. No multi-agent task execution until verified atomic claims are available; task announcement alone does not reserve work.
+
+## Claim coordinator implementation and remaining manual deployment
+- [Claim coordinator deployment, live tests and required manual steps](CLAIM_COORDINATOR_SETUP.md)
+- Prototype acquisition CLI: [`tools/claim-coordinator/claim.py`](../../tools/claim-coordinator/claim.py)
+- Offline tests: [`tools/claim-coordinator/test_claim.py`](../../tools/claim-coordinator/test_claim.py)
+
+**Status:** code committed but not executed in this session; no live atomic race test, identity/fencing registry, branch ruleset or PR ownership enforcement yet. Do not run unattended multi-agent tasks until manual checklist passes.
