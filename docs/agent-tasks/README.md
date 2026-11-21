@@ -33,3 +33,16 @@ This directory is a versioned task queue for Codex and other agents. GitHub Issu
 - Keep commits scoped, avoid unrelated refactors, preserve existing solver defaults and numerical physics.
 - Test existing and new behavior, document commands, results, limitations, regression checks and upstream compatibility. Maintain changelog or PR change summary.
 - Do not merge without approval; report blockers and never invent validation evidence.
+
+## Reliability and coverage backlog (new)
+| Task | Prompt | Dependency |
+|---|---|---|
+| INF-01 | [Atomic claims and lease recovery](INF-01-atomic-claims.md) | Highest priority; required before autonomous parallel execution |
+| INF-02 | [Task registry and scheduler](INF-02-task-registry.md) | INF-01 for live claims; schema can begin independently |
+| INF-03 | [Cross-repository contract CI](INF-03-contract-ci.md) | Coordinate SRM 1D #14 and #10 |
+| INF-04 | [Independent verification and review](INF-04-independent-verification.md) | Can start now |
+| INF-05 | [Performance regression tracking](INF-05-performance.md) | Can start now |
+| QA-01 | [Property-based GUI and serialization tests](QA-01-property-tests.md) | Coordinate M0-0F and QA-02 |
+| QA-02 | [Golden-file compatibility corpus](QA-02-golden-files.md) | Coordinate M0-0B/M0-0C |
+
+**Recommended parallel starts:** INF-01 design/adversarial tests, INF-03 fixture inventory, INF-04 report schema, QA-02 corpus inventory. Do not dispatch task implementation without a verified exclusive claim.
