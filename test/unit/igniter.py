@@ -6,6 +6,7 @@ it importable; they skip cleanly when it is not. The real user config / log
 directories are never touched: ``platformdirs`` is pointed at a temp dir while
 ``uilib`` is imported, and the manager tests patch ``getConfigPath``.
 """
+import atexit as _atexit
 import copy
 import os
 import shutil
@@ -20,6 +21,9 @@ import motorlib.solvers
 import motorlib.igniter
 
 _TMP_ROOT = tempfile.mkdtemp(prefix='om_igniter_unit_')
+# The runner imports test modules with wildcards. Keep cleanup out of the
+# unittest module hooks so another imported module cannot remove this directory.
+_atexit.register(shutil.rmtree, _TMP_ROOT, ignore_errors=True)
 _SKIP = None
 _SKIP_PREFS = 'not imported'
 _orig = (platformdirs.user_data_dir, platformdirs.user_log_dir)
@@ -59,10 +63,6 @@ CHAMBER = {
     'cartridge_length_m': -1.0, 'basket_fill_fraction': 0.5,
     'pellet_packing_fraction': 0.60,
 }
-
-
-def tearDownModule():
-    shutil.rmtree(_TMP_ROOT, ignore_errors=True)
 
 
 def _motor_dict(igniter):
