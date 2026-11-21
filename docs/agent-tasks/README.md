@@ -62,3 +62,15 @@ This directory is a versioned task queue for Codex and other agents. GitHub Issu
 | UI-10 | [Reproducible report export](UI-10-report-export.md) | Result schema and UI-02 |
 
 **Parallel preparation:** UI-01 inventory, UI-02 plotting audit, UI-09 test baseline, UI-08 UQ mock interface. Production implementation requires verified exclusive claims and pinned cross-repo contracts.
+
+## Architecture, data and maintenance expansion
+| Task | Prompt |
+|---|---|
+| ARCH-02 | [plugin-capabilities](ARCH-02-plugin-capabilities.md) |
+| ARCH-03 | [release-migration](ARCH-03-release-migration.md) |
+| AGENT-02 | [merge-checkpoints](AGENT-02-merge-checkpoints.md) |
+| RESEARCH-02 | [evidence-links](RESEARCH-02-evidence-links.md) |
+| DATA-03 | [drawing-import-review](DATA-03-drawing-import-review.md) |
+| DOC-01 | [onboarding](DOC-01-onboarding.md) |
+
+These extend existing M0/INF/UI work; audit for overlap before implementing. Reference drawing workflow is evidence/metadata-oriented, not an assertion of a fully specified motor.
