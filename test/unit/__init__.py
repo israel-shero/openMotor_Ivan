@@ -7,3 +7,4 @@ from .taper import *
 from .igniter import *
 from .importedData import *
 from .importedDataGui import *
+from .fileIO import TestFileEnvelope
