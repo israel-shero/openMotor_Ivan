@@ -46,3 +46,19 @@ This directory is a versioned task queue for Codex and other agents. GitHub Issu
 | QA-02 | [Golden-file compatibility corpus](QA-02-golden-files.md) | Coordinate M0-0B/M0-0C |
 
 **Recommended parallel starts:** INF-01 design/adversarial tests, INF-03 fixture inventory, INF-04 report schema, QA-02 corpus inventory. Do not dispatch task implementation without a verified exclusive claim.
+
+## UI and usability workstream
+| ID | Task | Dependencies |
+|---|---|---|
+| UI-01 | [UI inventory and workflow audit](UI-01-workflow-audit.md) | First; check upstream before implementing |
+| UI-02 | [Plotting and run comparison](UI-02-plot-workspace.md) | M0-0F; preserve dual-axis requirement |
+| UI-03 | [Configuration inspector and multi-edit](UI-03-configuration-inspector.md) | UI-01 |
+| UI-04 | [Interactive axial geometry editor](UI-04-geometry-editor.md) | SRM #3, UI-01 |
+| UI-05 | [Simulation status and diagnostics](UI-05-diagnostics.md) | Solver diagnostics contract |
+| UI-06 | [Command palette, presets and recovery](UI-06-productivity.md) | UI-01 |
+| UI-07 | [Axial results explorer](UI-07-axial-explorer.md) | SRM #10 result contract |
+| UI-08 | [UQ/identification workbench](UI-08-uq-workbench.md) | SRM #18–#23; start UX design separately |
+| UI-09 | [GUI QA, accessibility and performance](UI-09-qa-accessibility.md) | M0-0D; can begin now |
+| UI-10 | [Reproducible report export](UI-10-report-export.md) | Result schema and UI-02 |
+
+**Parallel preparation:** UI-01 inventory, UI-02 plotting audit, UI-09 test baseline, UI-08 UQ mock interface. Production implementation requires verified exclusive claims and pinned cross-repo contracts.
