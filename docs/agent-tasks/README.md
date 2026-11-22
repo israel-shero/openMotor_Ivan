@@ -88,3 +88,12 @@ These extend existing M0/INF/UI work; audit for overlap before implementing. Ref
 - Offline tests: [`tools/claim-coordinator/test_claim.py`](../../tools/claim-coordinator/test_claim.py)
 
 **Status:** code committed but not executed in this session; no live atomic race test, identity/fencing registry, branch ruleset or PR ownership enforcement yet. Do not run unattended multi-agent tasks until manual checklist passes.
+
+## Targeted GUI runtime performance workstream
+| Task | Scope |
+|---|---|
+| PERF-UI-01 | [GUI profiling and responsiveness](PERF-UI-01-profiling.md) |
+| PERF-UI-02 | [Plot rendering and geometry preview](PERF-UI-02-rendering.md) |
+| PERF-UI-03 | [Background jobs and cancellation](PERF-UI-03-background-jobs.md) |
+
+Coordinate INF-05, UI-05, UI-09 and M0-0F. Baseline before optimization; preserve full-resolution underlying data and solver fidelity.
