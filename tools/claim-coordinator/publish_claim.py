@@ -14,7 +14,7 @@ AGENT = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$")
 BRANCH = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]{1,159}$")
 ACTOR = re.compile(r"^[A-Za-z0-9][A-Za-z0-9-]{0,79}$")
 
-def publish(repo, task, agent, work_branch, scope, actor, run_id, base_sha, ledger, token, api="https://api.github.com"):
+def publish(repo, task, agent, work_branch, scope, actor, run_id, base_sha, ledger, token, api="https://api.github.com", ledger_mode="issue"):
     if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+",repo):
         raise ClaimError("Invalid repository")
     if not TASK.fullmatch(task) or not AGENT.fullmatch(agent):
@@ -44,21 +44,29 @@ def publish(repo, task, agent, work_branch, scope, actor, run_id, base_sha, ledg
         "The claim must not be automatically released, transferred, or merged. "
         "Agent changes require a separate PR, passing CI, and explicit human approval before merge."
     )
-    url=api.rstrip("/")+"/repos/"+repo+"/issues/"+str(ledger)+"/comments"
+    if ledger_mode == "issue":
+        url=api.rstrip("/")+"/repos/"+repo+"/issues/"+str(ledger)+"/comments"
+    elif ledger_mode == "commit":
+        # A commit comment is a durable ledger in repositories where Issues are disabled.
+        # This needs Contents permission and does not depend on a merged PR timeline.
+        url=api.rstrip("/")+"/repos/"+repo+"/commits/"+base_sha+"/comments"
+    else:
+        raise ClaimError("Unrecognized ledger mode")
     status, result=request("POST",url,token,{"body":body})
     if status!=201 or not isinstance(result,dict) or not isinstance(result.get("id"),int):
         raise ClaimError("Claim notice not confirmed; STOP, do not code, inspect lock and ledger")
-    return {"status":"PUBLISHED","comment_id":result["id"],"comment_url":result.get("html_url")}
+    return {"status":"PUBLISHED","ledger_mode":ledger_mode,"comment_id":result["id"],"comment_url":result.get("html_url")}
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for key in ("repo","task","agent","work-branch","scope","actor","run-id","base-sha","ledger"):
         p.add_argument("--"+key,required=True)
+    p.add_argument("--ledger-mode", choices=("issue","commit"), default="issue")
     args=p.parse_args()
     token=os.getenv("GH_TOKEN") or os.getenv("GITHUB_TOKEN")
     if not token: p.error("GH_TOKEN or GITHUB_TOKEN is required")
     try:
-        result=publish(args.repo,args.task,args.agent,args.work_branch,args.scope,args.actor,args.run_id,args.base_sha,int(args.ledger),token)
+        result=publish(args.repo,args.task,args.agent,args.work_branch,args.scope,args.actor,args.run_id,args.base_sha,int(args.ledger),token,ledger_mode=args.ledger_mode)
         print("Claim notice published:",result)
     except (ValueError,ClaimError) as exc:
         print("CLAIM NOTICE FAILED: Lock remains held. STOP and reconcile manually:",exc,file=sys.stderr)
