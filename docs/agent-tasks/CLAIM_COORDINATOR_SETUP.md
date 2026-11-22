@@ -85,3 +85,11 @@ Create a trusted required status check that validates task ID, claim ref, author
 - Tested on PR branch: claim coordinator unit tests pass. **Live create-ref concurrency is still NOT TESTED.**
 - Existing claim refs are deliberately immutable to non-admin users; recovery requires authorized admin bypass.
 - Do not mistake branch protection for agent ownership verification. Required PR attestation, identity/fencing, and safe stale-claim recovery are pending.
+
+## openMotor ownership ledger (2026-11-22 issue-disabled correction)
+
+This repository has GitHub Issues disabled. The first mandatory owner-publication test [run 44984841566](https://github.com/israel-shero/openMotor_Ivan/actions/runs/44984841566) created the `TEST-CLAIM-OWNER-20261121-C` reference but failed with HTTP 403 when the workflow's GitHub Actions token attempted to comment on merged PR #6. The claim remains held and is **not** an authorized work assignment; [reconciliation notice](https://github.com/israel-shero/openMotor_Ivan/pull/6#issuecomment-7074162968).
+
+For openMotor, the workflow is configured to publish a GitHub **commit comment** attached to the verified base SHA instead. GitHub's REST `POST /repos/OWNER/REPO/commits/SHA/comments` endpoint uses the repository Contents permission and returns an auditable comment link. It does not require issue comments. The workflow must fail closed if comment creation is not independently confirmed. SRM1D continues using issue #12 for its ledger.
+
+After this correction is merged, use a new, unique `TEST-CLAIM-OWNER-*` test identifier and verify both (1) create-only ref and (2) actual GitHub commit-comment body/link, including task, agent label, run, work branch and scope. Do not reuse the existing `-C` test ref. Do not start production agent work until this end-to-end test passes.
