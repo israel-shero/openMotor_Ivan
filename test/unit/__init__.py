@@ -10,3 +10,4 @@ from .importedDataGui import *
 from .fileIO import TestFileEnvelope
 from .migrationBaseline import TestMigrationBaseline
 from .solverConfigBaseline import TestSolverConfigBaseline
+from .interchangeV1 import TestInterchangeV1
