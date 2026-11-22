@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "repository": "israel-shero/openMotor_Ivan",
+  "source": "docs/agent-tasks/README.md",
+  "generated_from": "reviewed task index",
+  "status": "planning-only; not implementation verified",
+  "task_identifiers": [
+    "M0-0B",
+    "M0-0C",
+    "M0-0D",
+    "M0-0E",
+    "M0-0F",
+    "M0-0G",
+    "INF-01",
+    "INF-02",
+    "INF-03",
+    "INF-04",
+    "INF-05",
+    "QA-01",
+    "QA-02",
+    "UI-01",
+    "UI-02",
+    "UI-03",
+    "UI-04",
+    "UI-05",
+    "UI-06",
+    "UI-07",
+    "UI-08",
+    "UI-09",
+    "UI-10",
+    "ARCH-02",
+    "ARCH-03",
+    "AGENT-02",
+    "RESEARCH-02",
+    "DATA-03",
+    "DOC-01"
+  ],
+  "requirements": [
+    {
+      "id": "REQ-CLAIM",
+      "description": "Verified exclusive task ownership before autonomous execution",
+      "evidence": "atomic create-only race test, fail-closed fallback, stale recovery",
+      "status": "unverified"
+    },
+    {
+      "id": "REQ-TRACE",
+      "description": "Each requirement maps to task, code, test and review evidence",
+      "evidence": "coverage matrix with links and explicit unsupported status",
+      "status": "unverified"
+    },
+    {
+      "id": "REQ-REGRESS",
+      "description": "No silent default or schema regression",
+      "evidence": "pinned baseline fixtures, golden tests, compatibility report",
+      "status": "unverified"
+    },
+    {
+      "id": "REQ-REPRO",
+      "description": "Reproduce runs and errors",
+      "evidence": "version, inputs, environment, seed where relevant, logs and failure codes",
+      "status": "unverified"
+    },
+    {
+      "id": "REQ-REVIEW",
+      "description": "Independent review before merge",
+      "evidence": "PR links, acceptance checks, reviewer verdict and unresolved risks",
+      "status": "unverified"
+    },
+    {
+      "id": "REQ-CROSS",
+      "description": "Cross-repository interface compatibility",
+      "evidence": "versioned contract fixtures and paired CI",
+      "status": "unverified"
+    }
+  ],
+  "repo_specific": [
+    "High DPI, theme and keyboard usability",
+    "Qt/headless GUI regression",
+    "No unsupported output channels invented",
+    "Legacy .ric migration and plot axis independence"
+  ]
+}
