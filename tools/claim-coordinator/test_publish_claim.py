@@ -21,6 +21,18 @@ class PublishTests(unittest.TestCase):
             b=req.call_args.args[3]["body"]
             self.assertIn("codex-A",b);self.assertIn("actions/runs/1234567",b)
             self.assertIn("human-operator",b)
+    def test_commit_comment_ledger(self):
+        with patch.object(mod,"request",return_value=(201,{"id":456,"html_url":"https://github.com/owner/repo/commit/sha#commitcomment-456"})) as req:
+            r=mod.publish(*self.args(),ledger_mode="commit")
+            self.assertEqual(r["status"],"PUBLISHED")
+            self.assertEqual(r["ledger_mode"],"commit")
+            self.assertIn("commits/"+"a"*40+"/comments",req.call_args.args[1])
+            self.assertEqual(req.call_args.args[3]["body"].count("Claimed ref:"),1)
+    def test_invalid_ledger_mode_fails_closed(self):
+        with patch.object(mod,"request") as req:
+            with self.assertRaises(mod.ClaimError):
+                mod.publish(*self.args(),ledger_mode="unknown")
+            req.assert_not_called()
     def test_incomplete_response_fails(self):
         with patch.object(mod,"request",return_value=(201,{})):
             with self.assertRaises(mod.ClaimError):mod.publish(*self.args())

@@ -15,7 +15,7 @@ Status: **operator-supervised only**. No unattended multi-agent scheduling, auto
 1. Inspect live task backlog, current PRs, and existing `claims/TASK-ID`. Pick a narrow, dependency-ready task not already being developed.
 2. Human dispatches the claim workflow with **task_id**, **agent_id**, **work_branch**, and a short **scope**. Use the trusted default branch, not a feature branch.
 3. Claim script performs GitHub create-only `POST /git/refs`. Exactly one claimant succeeds. A conflict or ambiguous API result means STOP.
-4. After acquiring the ref, workflow posts a ledger comment to the central record. SRM1D: [coordination issue #12](https://github.com/israel-shero/srm_1d_Ivans_vibes/issues/12). openMotor: [coordinator PR #6](https://github.com/israel-shero/openMotor_Ivan/pull/6) (issue comments remain available on the merged PR). The comment includes the verified GitHub dispatch actor and workflow URL, the agent label, base SHA, task, scope, and work branch.
+4. After acquiring the ref, workflow posts a ledger comment to the central record. SRM1D: [coordination issue #12](https://github.com/israel-shero/srm_1d_Ivans_vibes/issues/12). openMotor: a GitHub commit comment on the pinned base SHA (Contents permission; the repository has Issues disabled). The comment includes the verified GitHub dispatch actor and workflow URL, the agent label, base SHA, task, scope, and work branch.
 5. **Do not start coding** until both the claim ref and ledger comment are visible and correspond to the same run. If publishing the comment fails, the lock remains held. Stop and reconcile; do not retry the claim or reassign it.
 6. The agent creates only its named work branch, reads the exact task criteria, commits in small slices, runs tests, and opens a PR. It does not make direct writes to shared integration branches.
 
@@ -55,3 +55,9 @@ No heartbeat daemon, lease timeout, fencing tokens, distributed scheduler, autom
 - [ ] User-approved merge only.
 
 If GitHub Actions cannot post to the ledger (notably a merged PR in a repository with Issues disabled), the claim remains reserved and **the pilot must not proceed** until the log destination is fixed and verified in a PR. Do not silently substitute workflow output as the durable ownership record.
+
+## Ownership record correction, 2026-11-22
+
+openMotor's initial ownership test created a `TEST-CLAIM-OWNER-20261121-C` ref but `GITHUB_TOKEN` failed with HTTP 403 when posting to the merged PR #6 issue-comment endpoint. The workflow correctly failed closed. [Failed run](https://github.com/israel-shero/openMotor_Ivan/actions/runs/44984841566); [manual incident record](https://github.com/israel-shero/openMotor_Ivan/pull/6#issuecomment-7074162968).
+
+The openMotor workflow uses a **commit comment on its verified base SHA** as its ledger instead. Commit-comment creation is supported with GitHub Contents repository permission; the response must confirm HTTP 201 and an auditable `html_url`. This needs a fresh test claim and independent API verification before the pilot can launch. The original `-C` test ref remains blocked until separately authorized cleanup.

@@ -24,7 +24,6 @@ on:
 
 permissions:
   contents: write
-  issues: write
 
 jobs:
   request-claim:
@@ -87,9 +86,9 @@ jobs:
             --repo "$REPO" --task "$TASK_ID" --agent "$AGENT_ID" \
             --work-branch "$WORK_BRANCH" --scope "$SCOPE" \
             --actor "$GITHUB_ACTOR_ID" --run-id "$RUN_ID" \
-            --base-sha "$BASE_SHA" --ledger "$LEDGER_ISSUE"
+            --base-sha "$BASE_SHA" --ledger "$LEDGER_ISSUE" --ledger-mode commit
           {
             echo ""
-            echo "**Claim notice published to ledger #$LEDGER_ISSUE.**"
+            echo "**Claim notice published to base commit $BASE_SHA (GitHub commit comment).**"
             echo "**Supervised pilot:** verify agent/branch, then permit only work branch + PR."
           } >> "$GITHUB_STEP_SUMMARY"
