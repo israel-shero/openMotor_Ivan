@@ -69,3 +69,12 @@ Create a trusted required status check that validates task ID, claim ref, author
 - [ ] Approve production multi-agent rollout
 
 **Security boundary:** Never treat branch-name existence, issue labels, comments or heartbeat timestamps alone as verified ownership. This is a safe initial acquisition primitive, not complete coordination.
+
+## Implemented workflow files (in this unmerged branch)
+- `.github/workflows/claim-coordinator-tests.yml`: runs read-only, mocked/offline coordinator tests on changed code. **Observed passing GitHub Actions run:** https://github.com/israel-shero/openMotor_Ivan/actions/runs/44981773352.
+- `.github/workflows/claim-request.yml`: trusted, manual-only `workflow_dispatch` with `contents: write`, an exclusive create-only ref POST, follow-up ref inspection, and a run-summary ownership record. Requires workflow on default branch before normal manual dispatch use.
+- `.github/workflows/claim-live-race.yml`: manual-only test with `TEST-CLAIM-*` ID; invokes `tools/claim-coordinator/live_race.py` and intentionally leaves a persistent test ref. Use distinct IDs for simultaneous and five-second stagger tests; do not auto-delete.
+
+**Status:** The offline unit tests passed on the branch. Neither live ref-creation workflow was executed; no live race, authorized owner registry, fencing or required PR check has been demonstrated. Existing active ruleset #27815142 prevents branch deletion/non-fast-forward for all branches; no required claim PR ownership check is configured.
+
+**Next:** Review/merge the appropriate PR, then use GitHub → Actions → Live claim atomicity race test to enter a fresh `TEST-CLAIM-...` identifier; separately repeat with a fresh identifier at a five-second stagger. Retain workflow logs and document the test refs and approvals. GitHub Actions code and repo rules should be reviewed by an administrator before turning on automated agent claiming.
