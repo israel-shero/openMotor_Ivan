@@ -11,3 +11,16 @@
 7. Agents must never claim a task in the other repository on behalf of their current repository. Cross-repository dependencies require separate claims.
 
 **Concurrency guarantee and limitation:** An exclusive remote ref creation can serialize competing agents even if they start seconds apart, provided the GitHub API truly uses create-only semantics. Comments, labels, and issue assignment are visible status signals, **not atomic locks**. The protocol prevents simultaneous task ownership; it does not by itself solve abandoned locks, offline work, or permissions failures. Coordinate recovery explicitly.
+
+## Recovering an inconclusive claim
+
+Preserve the workflow URL, expected task and work branch, dispatch actor, and base commit. Read the exact `refs/heads/claims/<TASK_ID>`, the workflow run, and the durable ledger comment independently. A successful ref read requires HTTP 200, the exact ref name and a full SHA. Check that SHA against the workflow's base commit and the ledger. Treat a malformed reply or read failure as inconclusive.
+
+| Evidence | Action |
+| --- | --- |
+| Successful run, matching ref and matching ledger | Resume only as the verified owner on the recorded work branch after checking for overlapping PRs. |
+| Ref and ledger identify a different successful claimant | Treat the task as reserved for that owner. |
+| Timeout, ambiguous dispatch or create result, missing ledger, or any mismatch | Stop work and report the evidence for operator reconciliation. Preserve the ref and avoid replaying the request, even if a later read cannot find the ref. |
+| Owner appears inactive | Preserve the reservation. The operator checks the recorded branch, open PRs, and any local work with the current owner before authorizing recovery. |
+
+The pilot keeps persistent reservations. Any future lease design must record the authenticated owner, run ID, nonce, base SHA, heartbeat and expiry, and use a monotonically increasing fencing token to reject writes from prior holders. Recovery must still require explicit operator authorization and retain an audit trail linking the old and new owners. An expiry timestamp alone cannot authorize release or transfer.

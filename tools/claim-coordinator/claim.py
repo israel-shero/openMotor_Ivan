@@ -44,6 +44,15 @@ def claim_url(api, repo, task):
     lookup = prefix + "/git/ref/" + urllib.parse.quote("heads/claims/" + task, safe="/")
     return prefix, ref, lookup
 
+def verified_ref_sha(status, payload, expected_status, ref):
+    if status != expected_status or not isinstance(payload, dict) or payload.get("ref") != ref:
+        raise ClaimError("Unexpected claim ref response: STOP and reconcile workflow, ref and ledger")
+    target = payload.get("object")
+    sha = target.get("sha") if isinstance(target, dict) else None
+    if not isinstance(sha, str) or not SHA.fullmatch(sha):
+        raise ClaimError("Invalid claim ref SHA: STOP and reconcile workflow, ref and ledger")
+    return sha
+
 def run(repo, task, base, token, api, action):
     if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repo):
         raise ClaimError("Invalid owner/repository")
@@ -51,14 +60,16 @@ def run(repo, task, base, token, api, action):
         raise ClaimError("Invalid task ID")
     prefix, ref, lookup = claim_url(api, repo, task)
     if action == "inspect":
-        _, obj = request("GET", lookup, token)
-        return {"status":"EXISTS","ref":obj.get("ref"),"sha":obj.get("object",{}).get("sha")}
+        status, payload = request("GET", lookup, token)
+        sha = verified_ref_sha(status, payload, 200, ref)
+        return {"status": "EXISTS", "ref": ref, "sha": sha}
     if not base or not SHA.fullmatch(base):
         raise ClaimError("Acquire requires explicit verified 40-character base SHA")
     # No preliminary existence check can substitute for the atomic POST.
-    status, obj = request("POST", prefix + "/git/refs", token, {"ref":ref,"sha":base})
-    if status != 201 or obj.get("ref") != ref or obj.get("object",{}).get("sha") != base:
-        raise ClaimError("Unexpected create response: STOP, inspect ref manually")
+    status, payload = request("POST", prefix + "/git/refs", token, {"ref":ref,"sha":base})
+    sha = verified_ref_sha(status, payload, 201, ref)
+    if sha.lower() != base.lower():
+        raise ClaimError("Claim ref points to an unexpected SHA: STOP and reconcile workflow, ref and ledger")
     return {"status":"ACQUIRED","ref":ref,"sha":base,"next":"Publish ownership notice and verify claim before work; no automatic release"}
 
 def main():
